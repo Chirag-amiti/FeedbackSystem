@@ -14,9 +14,9 @@ public class FeedbackSystemApplication {
 
 	}
 
-	@PostConstruct
-	public void testConsole() {
-		System.out.println("✅ Spring Boot Starter Project is Running Successfully!");
-	}
+	// @PostConstruct
+	// public void testConsole() {
+	// 	System.out.println("✅ Spring Boot Starter Project is Running Successfully!");
+	// }
 
 }
