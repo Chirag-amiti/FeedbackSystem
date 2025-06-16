@@ -14,28 +14,28 @@ public class Feedback {
     private int rating;
 
     @ManyToOne
-    @JoinColumn(name = "sender_id")
-    private User sender;
+    @JoinColumn(name = "from_user_id")
+    private User fromUser;
 
     @ManyToOne
-    @JoinColumn(name = "receiver_id")
-    private User receiver;
+    @JoinColumn(name = "to_user_id")
+    private User toUser;
 
     @ManyToOne
     @JoinColumn(name = "cycle_id")
     private PerformanceCycle performanceCycle;
 
-    public Feedback() {}
+    public Feedback() {
+    }
 
-    public Feedback(String comments, int rating, User sender, User receiver, PerformanceCycle performanceCycle) {
+    public Feedback(String comments, int rating, User fromUser, User toUser, PerformanceCycle performanceCycle) {
         this.comments = comments;
         this.rating = rating;
-        this.sender = sender;
-        this.receiver = receiver;
+        this.fromUser = fromUser;
+        this.toUser = toUser;
         this.performanceCycle = performanceCycle;
     }
 
-    // Getters and Setters
     public Long getId() {
         return id;
     }
@@ -56,20 +56,20 @@ public class Feedback {
         this.rating = rating;
     }
 
-    public User getSender() {
-        return sender;
+    public User getFromUser() {
+        return fromUser;
     }
 
-    public void setSender(User sender) {
-        this.sender = sender;
+    public void setFromUser(User fromUser) {
+        this.fromUser = fromUser;
     }
 
-    public User getReceiver() {
-        return receiver;
+    public User getToUser() {
+        return toUser;
     }
 
-    public void setReceiver(User receiver) {
-        this.receiver = receiver;
+    public void setToUser(User toUser) {
+        this.toUser = toUser;
     }
 
     public PerformanceCycle getPerformanceCycle() {
@@ -80,3 +80,88 @@ public class Feedback {
         this.performanceCycle = performanceCycle;
     }
 }
+
+
+/*package com.example.feedbackSystem.model;
+
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "feedbacks")
+public class Feedback {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String comments;
+    private int rating;
+
+    @ManyToOne
+    @JoinColumn(name = "from_user_id")
+    private User fromUser;
+
+    @ManyToOne
+    @JoinColumn(name = "to_user_id")
+    private User toUser;
+
+    @ManyToOne
+    @JoinColumn(name = "cycle_id")
+    private PerformanceCycle performanceCycle;
+
+    public Feedback() {
+    }
+
+    public Feedback(String comments, int rating, User fromUser, User toUser, PerformanceCycle performanceCycle) {
+        this.comments = comments;
+        this.rating = rating;
+        this.fromUser = fromUser;
+        this.toUser = toUser;
+        this.performanceCycle = performanceCycle;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getComments() {
+        return comments;
+    }
+
+    public void setComments(String comments) {
+        this.comments = comments;
+    }
+
+    public int getRating() {
+        return rating;
+    }
+
+    public void setRating(int rating) {
+        this.rating = rating;
+    }
+
+    public User getFromUser() {
+        return fromUser;
+    }
+
+    public void setFromUser(User fromUser) {
+        this.fromUser = fromUser;
+    }
+
+    public User getToUser() {
+        return toUser;
+    }
+
+    public void setToUser(User toUser) {
+        this.toUser = toUser;
+    }
+
+    public PerformanceCycle getPerformanceCycle() {
+        return performanceCycle;
+    }
+
+    public void setPerformanceCycle(PerformanceCycle performanceCycle) {
+        this.performanceCycle = performanceCycle;
+    }
+}
+ */

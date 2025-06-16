@@ -12,18 +12,17 @@ public class PerformanceCycle {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String quarterName; // e.g. - Q1 2025
-
+    private String title;
     private LocalDate startDate;
     private LocalDate endDate;
 
     @OneToMany(mappedBy = "performanceCycle", cascade = CascadeType.ALL)
-    private List<Feedback> feedbacks;
+    private List<User> users;
 
     public PerformanceCycle() {}
 
-    public PerformanceCycle(String quarterName, LocalDate startDate, LocalDate endDate) {
-        this.quarterName = quarterName;
+    public PerformanceCycle(String title, LocalDate startDate, LocalDate endDate) {
+        this.title = title;
         this.startDate = startDate;
         this.endDate = endDate;
     }
@@ -33,12 +32,12 @@ public class PerformanceCycle {
         return id;
     }
 
-    public String getQuarterName() {
-        return quarterName;
+    public String getTitle() {
+        return title;
     }
 
-    public void setQuarterName(String quarterName) {
-        this.quarterName = quarterName;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public LocalDate getStartDate() {
@@ -57,11 +56,11 @@ public class PerformanceCycle {
         this.endDate = endDate;
     }
 
-    public List<Feedback> getFeedbacks() {
-        return feedbacks;
+    public List<User> getUsers() {
+        return users;
     }
 
-    public void setFeedbacks(List<Feedback> feedbacks) {
-        this.feedbacks = feedbacks;
+    public void setUsers(List<User> users) {
+        this.users = users;
     }
 }
