@@ -14,7 +14,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/users")
-// @CrossOrigin(origins = "*") // allow frontend requests for now
+@CrossOrigin(origins = "*") // allow frontend requests for now
 // @CrossOrigin(origins = "http://localhost:3333")
 public class UserController {
 
