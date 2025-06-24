@@ -8,7 +8,9 @@ import java.util.Date;
 @Component
 public class JwtUtils {
 
-    private final String jwtSecret = "Chirag123"; // later use env/config in prod
+    // private final String jwtSecret = "Chirag123"; // later use env/config in prod
+    private final String jwtSecret = "f93a9d84e3b04626b9a40a65d12acb1c"; 
+
     private final long jwtExpirationMs = 86400000; // 1 day
 
     private Key getSigningKey() {

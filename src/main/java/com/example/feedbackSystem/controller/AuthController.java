@@ -58,28 +58,52 @@ public class AuthController {
     }
 
     // ---------------- Login ----------------
-    @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody Map<String, String> loginRequest) {
-        try {
-            Authentication auth = authManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                    loginRequest.get("email"),
-                    loginRequest.get("password")
-                )
-            );
+    // @PostMapping("/login")
+    // public ResponseEntity<?> login(@RequestBody Map<String, String> loginRequest) {
+    //     try {
+    //         Authentication auth = authManager.authenticate(
+    //             new UsernamePasswordAuthenticationToken(
+    //                 loginRequest.get("email"),
+    //                 loginRequest.get("password")
+    //             )
+    //         );
 
-            CustomUserDetails userDetails = (CustomUserDetails) auth.getPrincipal();
-            String token = jwtUtils.generateToken(userDetails.getUsername());
+    //         CustomUserDetails userDetails = (CustomUserDetails) auth.getPrincipal();
+    //         String token = jwtUtils.generateToken(userDetails.getUsername());
 
-            Map<String, Object> response = new HashMap<>();
-            response.put("token", token);
-            response.put("role", userDetails.getUserEntity().getRole());
+    //         Map<String, Object> response = new HashMap<>();
+    //         response.put("token", token);
+    //         response.put("role", userDetails.getUserEntity().getRole());
 
-            return ResponseEntity.ok(response);
-        } catch (AuthenticationException e) {
-            return ResponseEntity.status(401).body("Invalid credentials");
-        }
+    //         return ResponseEntity.ok(response);
+    //     } catch (AuthenticationException e) {
+    //         return ResponseEntity.status(401).body("Invalid credentials");
+    //     }
+    // }
+@PostMapping("/login")
+public ResponseEntity<?> login(@RequestBody Map<String, String> loginRequest) {
+    try {
+        Authentication auth = authManager.authenticate(
+            new UsernamePasswordAuthenticationToken(
+                loginRequest.get("email"),
+                loginRequest.get("password")
+            )
+        );
+
+        CustomUserDetails userDetails = (CustomUserDetails) auth.getPrincipal();
+        String token = jwtUtils.generateToken(userDetails.getUsername());
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("token", token);
+        response.put("role", userDetails.getUserEntity().getRole());
+
+        return ResponseEntity.ok(response);
+    } catch (AuthenticationException e) {
+        return ResponseEntity.status(401).body("Invalid credentials");
     }
+}
+
+    
 }
 
 
