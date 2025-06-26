@@ -29,7 +29,7 @@ public class UserController {
 
     // GET - All users
     @GetMapping
-    @PreAuthorize("hasRole('MANAGER')")
+    @PreAuthorize("hasAnyRole('EMPLOYEE', 'MANAGER')")
     public List<User> getAllUsers() {
         return userService.getAllUsers();
     }
@@ -50,6 +50,7 @@ public class UserController {
 
     // ✅ NEW: GET current logged-in user using token
     @GetMapping("/me")
+    @PreAuthorize("hasAnyRole('EMPLOYEE', 'MANAGER')")
     public Map<String, Object> getCurrentUser(Authentication authentication) {
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
         User user = userDetails.getUserEntity();

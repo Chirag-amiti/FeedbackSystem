@@ -2,6 +2,8 @@ package com.example.feedbackSystem.model;
 
 import jakarta.persistence.*;
 
+// import java.util.UUID; // add this for uuid
+
 @Entity
 @Table(name = "users")
 public class User {
@@ -9,6 +11,13 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    
+    // @Id
+    // @GeneratedValue
+    // @Column(columnDefinition = "BINARY(16)") //CHAR(36)
+    // private UUID id;
+
 
     private String name;
 
@@ -39,6 +48,10 @@ public class User {
     public Long getId() {
         return id;
     }
+
+    //  public UUID getId() {
+    //     return id;
+    // }
 
     public String getName() {
         return name;

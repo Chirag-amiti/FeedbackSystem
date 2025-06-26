@@ -1,4 +1,5 @@
 package com.example.feedbackSystem.security;
+
 import com.example.feedbackSystem.service.CustomUserDetailsService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -23,25 +24,26 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
-                                    HttpServletResponse response,
-                                    FilterChain filterChain)
+            HttpServletResponse response,
+            FilterChain filterChain)
             throws ServletException, IOException {
 
-               System.out.println("🛡️ JwtAuthenticationFilter executing... URL = " + request.getRequestURI());
-               System.out.println("request" + request);
+        // System.out.println("🛡️ JwtAuthenticationFilter executing... URL = " +
+        // request.getRequestURI());
+        // System.out.println("request" + request);
 
         // String authHeader = request.getHeader("Authorization");
-String authHeader = request.getHeader("Authorization");
-System.out.println("🔐 Authorization Header: " + authHeader);
+        String authHeader = request.getHeader("Authorization");
+        // System.out.println("🔐 Authorization Header: " + authHeader);
 
         String token = null;
         String username = null;
 
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            System.out.println("-----yaha tak aa aya huu::::::::::::::::::::::::::::::::");
+            // System.out.println("-----yaha tak aa aya huu::::::::::::::::::::::::::::::::");
             token = authHeader.substring(7);
             username = jwtUtils.extractUsername(token);
-            System.out.println("yaha tak aa aya huu::::::::::::::::::::::::::::::::");
+            // System.out.println("yaha tak aa aya huu::::::::::::::::::::::::::::::::");
         }
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
@@ -60,4 +62,3 @@ System.out.println("🔐 Authorization Header: " + authHeader);
         filterChain.doFilter(request, response);
     }
 }
-
