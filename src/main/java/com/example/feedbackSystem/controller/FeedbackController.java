@@ -1,6 +1,11 @@
 package com.example.feedbackSystem.controller;
 
+import java.util.Map; // ✅ Required import
+
+import com.example.feedbackSystem.repository.PerformanceCycleRepository; // ✅ Required import
+
 import com.example.feedbackSystem.model.Feedback;
+import com.example.feedbackSystem.model.PerformanceCycle;
 import com.example.feedbackSystem.model.User;
 import com.example.feedbackSystem.repository.UserRepository;
 import com.example.feedbackSystem.service.CustomUserDetails;
@@ -23,9 +28,12 @@ public class FeedbackController {
     @Autowired
     private UserRepository userRepository;
 
+     @Autowired
+    private PerformanceCycleRepository performanceCycleRepository;
+
     // Submit feedback (only EMPLOYEE)
     @PostMapping("/submit/{toUserId}")
-    @PreAuthorize("hasRole('EMPLOYEE')")
+    @PreAuthorize("hasAnyRole('EMPLOYEE', 'MANAGER')")
     public ResponseEntity<Feedback> submitFeedback(
             @AuthenticationPrincipal CustomUserDetails userDetails,
             @PathVariable Long toUserId,
@@ -60,4 +68,31 @@ public class FeedbackController {
     public ResponseEntity<List<Feedback>> getAllFeedbacks() {
         return ResponseEntity.ok(feedbackService.getAllFeedbacks());
     }
+
+    @PostMapping("/manager/submit/{toUserId}")
+@PreAuthorize("hasRole('MANAGER')")
+public ResponseEntity<Feedback> managerSubmitFeedback(
+        @AuthenticationPrincipal CustomUserDetails userDetails,
+        @PathVariable Long toUserId,
+        @RequestBody Map<String, Object> payload
+) {
+    User fromUser = userDetails.getUserEntity();
+    User toUser = userRepository.findById(toUserId).orElseThrow();
+
+    Feedback feedback = new Feedback();
+    feedback.setFromUser(fromUser);
+    feedback.setToUser(toUser);
+    feedback.setComments((String) payload.get("comments"));
+    feedback.setRating((Integer) payload.get("rating"));
+
+    if (payload.containsKey("cycleId")) {
+    String cycleIdStr = payload.get("cycleId").toString(); // ✅ safe even if frontend sends number or string
+    Long cycleId = Long.parseLong(cycleIdStr);
+    PerformanceCycle cycle = performanceCycleRepository.findById(cycleId).orElseThrow();
+    feedback.setPerformanceCycle(cycle);
+}
+
+    return ResponseEntity.ok(feedbackService.submitFeedback(feedback));
+}
+
 }
