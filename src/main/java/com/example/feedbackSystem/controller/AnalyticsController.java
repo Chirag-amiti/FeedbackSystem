@@ -19,9 +19,17 @@ public class AnalyticsController {
         return ResponseEntity.ok(analyticsService.getAverageRatingForTeam(team));
     }
 
-    @PreAuthorize("hasRole('MANAGER')")
+    // @PreAuthorize("hasRole('MANAGER')")
+    @PreAuthorize("hasAnyRole('EMPLOYEE', 'MANAGER')")
     @GetMapping("/top-rated")
     public ResponseEntity<?> getTopRatedEmployees() {
         return ResponseEntity.ok(analyticsService.getTopRatedUsers());
     }
+
+    @PreAuthorize("hasRole('MANAGER')")
+    @GetMapping("/cycle-wise")
+    public ResponseEntity<?> getAverageRatingByCycle() {
+        return ResponseEntity.ok(analyticsService.getAverageRatingByCycle());
+    }
+
 }

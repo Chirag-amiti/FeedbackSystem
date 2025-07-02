@@ -18,6 +18,19 @@ public class AnalyticsServiceImpl implements AnalyticsService {
     private UserRepository userRepository;
 
     @Override
+    public Map<String, Double> getAverageRatingByCycle() {
+        List<Object[]> results = feedbackRepository.findAverageRatingGroupedByCycle();
+        Map<String, Double> cycleRatings = new LinkedHashMap<>();
+
+        for (Object[] row : results) {
+            String title = (String) row[0];
+            Double avg = (Double) row[1];
+            cycleRatings.put(title, avg);
+        }
+        return cycleRatings;
+    }
+
+    @Override
     public Double getAverageRatingForTeam(String team) {
         return feedbackRepository.findAverageRatingByTeam(team);
     }

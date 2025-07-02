@@ -6,4 +6,6 @@ import java.util.Map;
 public interface AnalyticsService {
     Double getAverageRatingForTeam(String team);
     List<Map<String, Object>> getTopRatedUsers();
+    Map<String, Double> getAverageRatingByCycle();
+
 }
