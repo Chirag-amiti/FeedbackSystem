@@ -28,7 +28,7 @@ public class FeedbackController {
     @Autowired
     private UserRepository userRepository;
 
-     @Autowired
+    @Autowired
     private PerformanceCycleRepository performanceCycleRepository;
 
     // Submit feedback (only EMPLOYEE)
@@ -37,8 +37,7 @@ public class FeedbackController {
     public ResponseEntity<Feedback> submitFeedback(
             @AuthenticationPrincipal CustomUserDetails userDetails,
             @PathVariable Long toUserId,
-            @RequestBody Feedback feedback
-    ) {
+            @RequestBody Feedback feedback) {
         User fromUser = userDetails.getUserEntity();
         User toUser = userRepository.findById(toUserId).orElseThrow();
 
@@ -51,7 +50,8 @@ public class FeedbackController {
     // View feedbacks received by logged-in user
     @GetMapping("/received")
     @PreAuthorize("hasRole('EMPLOYEE')")
-    public ResponseEntity<List<Feedback>> getMyReceivedFeedbacks(@AuthenticationPrincipal CustomUserDetails userDetails) {
+    public ResponseEntity<List<Feedback>> getMyReceivedFeedbacks(
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
         return ResponseEntity.ok(feedbackService.getFeedbackForUser(userDetails.getUserEntity().getId()));
     }
 
@@ -69,30 +69,64 @@ public class FeedbackController {
         return ResponseEntity.ok(feedbackService.getAllFeedbacks());
     }
 
+    // Team feedback view (Manager only)
+    @GetMapping("/team")
+    @PreAuthorize("hasRole('MANAGER')")
+    public ResponseEntity<List<Feedback>> getTeamFeedback(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        String managerTeam = userDetails.getUserEntity().getTeam();
+        return ResponseEntity.ok(feedbackService.getFeedbackByTeam(managerTeam));
+    }
+
+    // Delete feedback (Manager only)
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('MANAGER')")
+    public ResponseEntity<?> deleteFeedback(@PathVariable Long id) {
+        feedbackService.deleteFeedback(id);
+        return ResponseEntity.ok().build();
+    }
+
+    // Update feedback (Manager only)
+    @PutMapping("/{id}")
+    @PreAuthorize("hasRole('MANAGER')")
+    public ResponseEntity<Feedback> updateFeedback(
+            @PathVariable Long id,
+            @RequestBody Map<String, Object> payload) {
+        Feedback updated = new Feedback();
+        updated.setComments((String) payload.get("comments"));
+        updated.setRating((Integer) payload.get("rating"));
+
+        if (payload.containsKey("cycleId") && payload.get("cycleId") != null) {
+            Long cycleId = Long.parseLong(payload.get("cycleId").toString());
+            PerformanceCycle cycle = performanceCycleRepository.findById(cycleId).orElseThrow();
+            updated.setPerformanceCycle(cycle);
+        }
+
+        return ResponseEntity.ok(feedbackService.updateFeedback(id, updated));
+    }
+
     @PostMapping("/manager/submit/{toUserId}")
-@PreAuthorize("hasRole('MANAGER')")
-public ResponseEntity<Feedback> managerSubmitFeedback(
-        @AuthenticationPrincipal CustomUserDetails userDetails,
-        @PathVariable Long toUserId,
-        @RequestBody Map<String, Object> payload
-) {
-    User fromUser = userDetails.getUserEntity();
-    User toUser = userRepository.findById(toUserId).orElseThrow();
+    @PreAuthorize("hasRole('MANAGER')")
+    public ResponseEntity<Feedback> managerSubmitFeedback(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @PathVariable Long toUserId,
+            @RequestBody Map<String, Object> payload) {
+        User fromUser = userDetails.getUserEntity();
+        User toUser = userRepository.findById(toUserId).orElseThrow();
 
-    Feedback feedback = new Feedback();
-    feedback.setFromUser(fromUser);
-    feedback.setToUser(toUser);
-    feedback.setComments((String) payload.get("comments"));
-    feedback.setRating((Integer) payload.get("rating"));
+        Feedback feedback = new Feedback();
+        feedback.setFromUser(fromUser);
+        feedback.setToUser(toUser);
+        feedback.setComments((String) payload.get("comments"));
+        feedback.setRating((Integer) payload.get("rating"));
 
-    if (payload.containsKey("cycleId")) {
-    String cycleIdStr = payload.get("cycleId").toString(); // ✅ safe even if frontend sends number or string
-    Long cycleId = Long.parseLong(cycleIdStr);
-    PerformanceCycle cycle = performanceCycleRepository.findById(cycleId).orElseThrow();
-    feedback.setPerformanceCycle(cycle);
-}
+        if (payload.containsKey("cycleId")) {
+            String cycleIdStr = payload.get("cycleId").toString(); // ✅ safe even if frontend sends number or string
+            Long cycleId = Long.parseLong(cycleIdStr);
+            PerformanceCycle cycle = performanceCycleRepository.findById(cycleId).orElseThrow();
+            feedback.setPerformanceCycle(cycle);
+        }
 
-    return ResponseEntity.ok(feedbackService.submitFeedback(feedback));
-}
+        return ResponseEntity.ok(feedbackService.submitFeedback(feedback));
+    }
 
 }

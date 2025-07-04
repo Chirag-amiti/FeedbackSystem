@@ -33,4 +33,26 @@ public class FeedbackServiceImpl implements FeedbackService {
         return feedbackRepository.findAll();
     }
 
+    @Override
+    public List<Feedback> getFeedbackByTeam(String team) {
+        return feedbackRepository.findAllFeedbacksByTeam(team);
+    }
+
+    @Override
+    public Feedback updateFeedback(Long id, Feedback updatedFeedback) {
+        Feedback existing = feedbackRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Feedback not found"));
+
+        existing.setComments(updatedFeedback.getComments());
+        existing.setRating(updatedFeedback.getRating());
+        existing.setPerformanceCycle(updatedFeedback.getPerformanceCycle());
+
+        return feedbackRepository.save(existing);
+    }
+
+    @Override
+    public void deleteFeedback(Long id) {
+        feedbackRepository.deleteById(id);
+    }
+
 }
