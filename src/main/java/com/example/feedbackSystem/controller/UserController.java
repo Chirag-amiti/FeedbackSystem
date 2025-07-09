@@ -48,9 +48,9 @@ public class UserController {
         userService.deleteUser(id);
     }
 
-    // ✅ NEW: GET current logged-in user using token
+    // GET current logged-in user using token
     @GetMapping("/me")
-    @PreAuthorize("hasAnyRole('EMPLOYEE', 'MANAGER')")
+    @PreAuthorize("hasAnyRole('EMPLOYEE', 'MANAGER', 'ADMIN')")
     public Map<String, Object> getCurrentUser(Authentication authentication) {
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
         User user = userDetails.getUserEntity();
